@@ -1,5 +1,5 @@
-<h1>Welcome to SvelteKit</h1>
-<p class="m-3">Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+
+Dashboard content goes here.
 
 <div class="m-10">
     <button class="btn btln-lg">Da Button</button>

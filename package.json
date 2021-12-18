@@ -34,6 +34,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"daisyui": "^1.16.6"
+		"daisyui": "^1.16.6",
+		"cookie": "^0.4.1"		
 	}
 }
