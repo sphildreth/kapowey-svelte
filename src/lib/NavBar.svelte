@@ -87,11 +87,12 @@
 	</div> -->
 	<div class="hidden px-2 mx-2 navbar-center flex-1 lg:flex">
 		<div class="flex items-stretch">
-		  <a class="btn btn-ghost btn-sm rounded-btn" href="/">Dashboard</a> 
-		  <a class="btn btn-ghost btn-sm rounded-btn" href="/publishers">Publishers</a> 
-		  <a class="btn btn-ghost btn-sm rounded-btn" href="/franchises">Franchises</a> 
-          <a class="btn btn-ghost btn-sm rounded-btn" href="/creator">Creators</a>				
-		  <a class="btn btn-ghost btn-sm rounded-btn" href="/series">Series</a>
+		  <a class="btn btn-ghost btn-sm rounded-btn" class:active={$page.path === '/'} href="/">Dashboard</a> 
+		  <a class="btn btn-ghost btn-sm rounded-btn" class:active={$page.path === '/publishers'}  href="/publishers">Publishers</a> 
+		  <a class="btn btn-ghost btn-sm rounded-btn" class:active={$page.path === '/franchises'}  href="/franchises">Franchises</a> 
+          <a class="btn btn-ghost btn-sm rounded-btn" class:active={$page.path === '/creators'}  href="/creators">Creators</a>				
+		  <a class="btn btn-ghost btn-sm rounded-btn" class:active={$page.path === '/series'}  href="/series">Series</a>
+		  <a class="btn btn-ghost btn-sm rounded-btn" class:active={$page.path === '/issues'}  href="/issues">Issues</a>
 		</div>
 	</div>
 	
@@ -135,11 +136,21 @@
 		</button>
 	</div>
 	<div class="flex-none">
-		<div class="avatar">
-			<div class="rounded-full w-10 h-10 m-1">
-				<img src="https://i.pravatar.cc/500?img=32" />
+		{#if $session.user}
+			<div class="avatar">
+				<div class="rounded-full w-10 h-10 m-1">
+					<img src="https://i.pravatar.cc/500?img=32" />
+				</div>
 			</div>
-		</div>
+		{:else}
+			<div class="rounded-full m-1">
+				<a rel="prefetch" href="/login" class="nav-link" class:active={$page.path === '/login'}>
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+				  	</svg>
+				</a>
+			</div>
+		{/if}		
 	</div>
 </nav>
 
