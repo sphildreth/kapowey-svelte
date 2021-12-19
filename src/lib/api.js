@@ -1,4 +1,4 @@
-const base = 'https://localhost:5000';
+const base = 'http://localhost:5000';
 
 async function send({ method, path, data, token }) {
 	const opts = { method, headers: {} };
