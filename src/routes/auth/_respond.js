@@ -1,3 +1,5 @@
+import { serialize } from 'cookie';
+import { envSettings } from '$lib/envSettings.ts';
 export function respond(body) {
 	if (body.errors) {
 		return { status: 401, body };
@@ -9,8 +11,14 @@ export function respond(body) {
 
 	return {
 		headers: {
-			'set-cookie': `jwt=${value}; Path=/; HttpOnly`
-		},
+			'Set-Cookie': serialize('session', `${value}`, {
+				path: '/',
+				httpOnly: true,
+				sameSite: 'strict',
+				secure: envSettings.environment === 'production',
+				maxAge: 60 * 60 * 24 * 7, // one week
+			}),
+		},		
 		body
 	};
 }

@@ -7,3 +7,7 @@
 </svelte:head>
 
 Dashboard content goes here.
+
+{#if $session.user}
+  User is logged in.
+{/if}

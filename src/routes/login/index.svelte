@@ -11,9 +11,7 @@
 </script>
 
 <script>
-  //import { session } from '$app/stores';
   import { post } from '$lib/utils.js';
-  import { goto } from '$app/navigation';
   import ListErrors from '$lib/ListErrors.svelte';
 
   let email = '';
@@ -27,7 +25,7 @@
     errors = response.errors;
 
     if (response.isSuccess) {
-      goto('/');
+      window.location = '/';
     }
   }
 </script>
@@ -38,6 +36,7 @@
 
 <div class="auth-page">
   <div class="w-full flex mx-auto mt-10 justify-center items-center">
+    <ListErrors {errors} />
     <form class="w-full md:w-1/3 bg-neutral rounded-lg" on:submit|preventDefault={submit}>
       <div class="px-12 pb-10 mt-6">
         <div class="w-full mb-2">

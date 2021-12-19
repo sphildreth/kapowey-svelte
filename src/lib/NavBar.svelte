@@ -1,6 +1,12 @@
 <script>
   import { page, session } from '$app/stores';
   import NavBarLinks from './NavBarLinks.svelte';
+  import { post } from '$lib/utils.js';
+
+  async function logout() {
+    await post(`auth/logout`);
+    $session.user = null;
+  }
 </script>
 
 <nav class="navbar mb-2 shadow-lg bg-neutral text-neutral-content rounded-box">
@@ -82,9 +88,19 @@
   </div>
   <div class="flex-none">
     {#if $session.user}
-      <div class="avatar">
-        <div class="rounded-full w-10 h-10 m-1">
-          <img src={$session.user.avatarUrl} alt={$session.user.userName} />
+      <div class="dropdown dropdown-left">
+        <div tabindex="0" class="m-1 btn btn-square btn-ghost">
+          <div class="avatar">
+            <div class="rounded-full w-10 h-10 m-1">
+              <img src={$session.user.avatarUrl} alt={$session.user.userName} />
+            </div>
+          </div>
+        </div>
+        <div class="p-2 shadow menu dropdown-content bg-base-100 rounded-box w-52 mt-14">
+          <a class="btn btn-ghost btn-sm rounded-btn" href="/editprofile">Edit Profile</a>
+          <a class="btn btn-ghost btn-sm rounded-btn" href={'javascript:void(0)'} on:click={logout}
+            >Logout</a
+          >
         </div>
       </div>
     {:else}
