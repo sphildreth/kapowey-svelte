@@ -98,7 +98,7 @@
           </div>
         </div>
         <div class="p-2 shadow menu dropdown-content bg-base-100 rounded-box w-52 mt-14">
-          <a class="btn btn-ghost btn-sm rounded-btn" href="/editprofile">Edit Profile</a>
+          <a class="btn btn-ghost btn-sm rounded-btn" href="/profile/edit">Edit Profile</a>
           <a class="btn btn-ghost btn-sm rounded-btn" href={'javascript:void(0)'} on:click={logout}
             >Logout</a
           >

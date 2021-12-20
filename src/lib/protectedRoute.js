@@ -1,14 +1,13 @@
-export function protectedRoute(session, base, role) {
-    let hasRole = role;
-    if(hasRole) {
+export function protectedRoute(session, base, role, returnUrl) {
+    let hasRole = true;
+    if(role) {
         if(session.user) {
             hasRole = session.user[role] != null;
         }
     }
-    console.log({role: role, hasRole: hasRole})
-    if(!session.user && hasRole) {
+    if(!session.user || (session.user && !hasRole)) {
         return {
-            redirect: '/login',
+            redirect: `/login?returnUrl=${ returnUrl ? btoa(returnUrl) : '' }`,
             status: 303
         }
     }

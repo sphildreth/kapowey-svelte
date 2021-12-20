@@ -12,6 +12,7 @@
 
 <script>
   import { post } from '$lib/utils.js';
+  import { page, session } from '$app/stores';
   import ListErrors from '$lib/ListErrors.svelte';
 
   let email = '';
@@ -25,7 +26,8 @@
     errors = response.errors;
 
     if (response.isSuccess) {
-      window.location = '/';
+      const returnUrl = $page.query.get('returnUrl');
+      window.location = returnUrl ? atob(returnUrl) : '/';
     }
   }
 </script>
@@ -65,11 +67,7 @@
         </div>
         <a href="/register" class="text-xs text-gray-500 float-left mb-4">Need an account?</a>
         <a href="#" class="text-xs text-gray-500 float-right mb-4">Forgot Password?</a>
-        <button
-          type="submit"
-          class="w-full py-2 rounded-full bg-success text-gray-100  focus:outline-none"
-          >Button</button
-        >
+        <button type="submit" class="w-full py-2 rounded-full bg-success text-gray-100  focus:outline-none">Button</button>
       </div>
     </form>
   </div>
