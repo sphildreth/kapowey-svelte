@@ -4,7 +4,7 @@
 
 <div class="tabs">
   <a class="tab tab-bordered" class:active={$page.path === '/admin'} href="/admin">Dashboard</a>
-  {#if $session.user.isAdmin}
+  {#if $session.user && $session.user.isAdmin}
     <a class="tab tab-bordered" class:active={$page.path === '/admin/users'} href="/admin/users"
       >Users</a
     >

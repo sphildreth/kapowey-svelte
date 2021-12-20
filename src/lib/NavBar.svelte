@@ -6,6 +6,7 @@
   async function logout() {
     await post(`/auth/logout`);
     $session.user = null;
+    window.location = '/';
   }
 </script>
 
