@@ -4,7 +4,7 @@
   import { post } from '$lib/utils.js';
 
   async function logout() {
-    await post(`auth/logout`);
+    await post(`/auth/logout`);
     $session.user = null;
   }
 </script>

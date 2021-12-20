@@ -1,7 +1,5 @@
 <script>
   import { page, session } from '$app/stores';
-  import Users from '../routes/admin/users.svelte';
-
   const showAdminMenu =
     $session.user && ($session.user.isEditor || $session.user.isManager || $session.user.isEditor);
 </script>
@@ -28,7 +26,9 @@
   >Issues</a
 >
 {#if $session.user && showAdminMenu}
-  <a class="btn btn-ghost btn-sm rounded-btn" class:active={$page.path === '/admin'} href="/admin"
-    >Admin</a
+  <a
+    class="btn btn-ghost btn-sm rounded-btn"
+    class:active={$page.path.indexOf('/admin') > -1}
+    href="/admin">Admin</a
   >
 {/if}

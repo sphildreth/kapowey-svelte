@@ -1,6 +1,5 @@
 <script>
   import { page, session } from '$app/stores';
-  import Users from '../../routes/admin/users.svelte';
 </script>
 
 <div class="tabs">
