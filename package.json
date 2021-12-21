@@ -28,12 +28,14 @@
 		"svelte": "^3.44.0",
 		"svelte-check": "^2.2.6",
 		"svelte-preprocess": "^4.9.8",
+		"tailwindcss": "^3.0.0",
 		"tslib": "^2.3.1",
 		"typescript": "^4.4.3"
 	},
 	"type": "module",
 	"dependencies": {
 		"cookie": "^0.4.1",
+		"daisyui": "^1.16.6",
 		"dotenv": "^10.0.0"
 	}
 }
