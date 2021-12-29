@@ -8,108 +8,103 @@
     $session.user = null;
     window.location = '/';
   }
+
+  function navMenuToggleClick() {
+    const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+    if ($navbarBurgers.length > 0) {
+      $navbarBurgers.forEach((el) => {
+        el.addEventListener('click', () => {
+          const target = el.dataset.target;
+          const _target = document.getElementById(target);
+          el.classList.toggle('is-active');
+          _target.classList.toggle('is-active');
+        });
+      });
+    }
+  }
+  let notifications = 0;
 </script>
 
-<nav class="navbar mb-2 shadow-lg bg-neutral text-neutral-content rounded-box">
-  <div class="flex-none">
-    <div class="avatar">
-      <div class="rounded-full w-10 h-10 m-1">
-        <a href="/">
-          <img src="/logo-256.png" alt="Kapowey!" />
-        </a>
-      </div>
-    </div>
-  </div>
-  <div class="flex-none flex">
-    <div class="dropdown">
-      <button class="btn btn-square btn-ghost lg:hidden">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-6 h-6 stroke-current">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
-      </button>
-      <div class="p-2 shadow menu dropdown-content bg-base-100 rounded-box w-52">
-        <NavBarLinks />
-      </div>
-    </div>
-  </div>
-  <div class="hidden px-2 mx-2 navbar-center flex-1 lg:flex">
-    <div class="flex items-stretch">
-      <NavBarLinks />
-    </div>
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a href="/">
+      <img src="/android-icon-48x48.png" height="48" width="48" alt="Kapowey!" />
+    </a>
+
+    <a role="button" on:click={navMenuToggleClick} class="navbar-burger" href={'javascript:void(0)'} aria-label="menu" aria-expanded="false" data-target="navMenu">
+      <span aria-hidden="true" />
+      <span aria-hidden="true" />
+      <span aria-hidden="true" />
+    </a>
   </div>
 
-  <div class="flex-1 lg:flex-none">
-    <div class="form-control">
-      <input type="text" placeholder="Search" class="input input-ghost" />
+  <div id="navMenu" class="navbar-menu">
+    <div class="navbar-start">
+      <a class="navbar-item" href="/" class:active={$page.path === '/'}> Dashboard </a>
+      <a class="navbar-item" class:active={$page.path === '/issues'} href="/issues"> Issues </a>
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link" href={'javascript:void(0)'}> More </a>
+        <div class="navbar-dropdown">
+          <NavBarLinks />
+        </div>
+      </div>
+    </div>
+
+    <div class="navbar-end">
+      <div class="navbar-item">
+        <div class="buttons">
+          {#if $session.user}
+            <div class="navbar-item has-control has-control-without-left-space">
+              <p class="control has-icons-left">
+                <input placeholder="Search" class="input is-primary" />
+                <span class="icon is-small is-left">
+                  <i class="fas fa-search" />
+                </span>
+              </p>
+            </div>
+            <a class="navbar-item nav-tag" href={'javascript:void(0)'}>
+              <span class="icon is-medium">
+                <i class="fas fa-bell fa-lg" />
+              </span>
+              {#if notifications}
+                <span class="tag is-danger counter">2</span>
+              {/if}
+            </a>
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link" href={'javascript:void(0)'}>
+                <figure class="image is-32x32">
+                  <img src={$session.user.avatarUrl} alt={$session.user.userName} />
+                </figure>
+                {$session.user.userName}
+              </a>
+              <div class="navbar-dropdown">
+                <a class="navbar-item" href="/profile/edit"> Edit Profile </a>
+                <hr class="navbar-divider" />
+                <a class="navbar-item is-warning" href={'javascript:void(0)'} on:click={logout}> Logout </a>
+              </div>
+            </div>
+          {:else}
+            <a class="button is-primary" href="/register" class:active={$page.path === '/register'}>
+              <strong>Register</strong>
+            </a>
+            <a class="button is-light" href="/login" class:active={$page.path === '/login'}> Log in </a>
+          {/if}
+        </div>
+      </div>
     </div>
   </div>
-  <div class="flex-none">
-    <button class="btn btn-square btn-ghost">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-6 h-6 stroke-current">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-      </svg>
-    </button>
-  </div>
-  <div class="flex-none">
-    {#if $session.user}
-      <button class="btn btn-square btn-ghost">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-6 h-6 stroke-current">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-          />
-        </svg>
-      </button>
-    {/if}
-  </div>
-  <div class="flex-none">
-    {#if $session.user}
-      <div class="dropdown dropdown-left">
-        <div tabindex="0" class="m-1 btn btn-square btn-ghost">
-          <div class="avatar">
-            <div class="rounded-full w-10 h-10 m-1">
-              <img src={$session.user.avatarUrl} alt={$session.user.userName} />
-            </div>
-          </div>
-        </div>
-        <div class="p-2 shadow menu dropdown-content bg-base-100 rounded-box w-52 mt-14">
-          <a class="btn btn-ghost btn-sm rounded-btn" href="/profile/edit">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 " fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>Edit Profile</a
-          >
-          <a class="btn btn-ghost btn-sm rounded-btn" href={'javascript:void(0)'} on:click={logout}
-            ><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-              />
-            </svg>Logout</a
-          >
-        </div>
-      </div>
-    {:else}
-      <div class="rounded-full m-1">
-        <a rel="prefetch" href="/login" class="nav-link" class:active={$page.path === '/login'}>
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-            />
-          </svg>
-        </a>
-      </div>
-    {/if}
-  </div>
 </nav>
+
+<style>
+  .nav-tag .icon {
+    height: 2.5rem;
+    width: 2.5rem;
+    border-radius: 50%;
+  }
+  .nav-tag .counter {
+    border-radius: 50%;
+    position: absolute;
+    top: 4px;
+    left: 31px;
+  }
+</style>

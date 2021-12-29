@@ -3,11 +3,12 @@
   const showAdminMenu = $session.user && ($session.user.isAdmin || $session.user.isManager || $session.user.isEditor);
 </script>
 
-<a class="btn btn-ghost btn-sm rounded-btn" class:active={$page.path === '/publishers'} href="/publishers">Publishers</a>
-<a class="btn btn-ghost btn-sm rounded-btn" class:active={$page.path === '/franchises'} href="/franchises">Franchises</a>
-<a class="btn btn-ghost btn-sm rounded-btn" class:active={$page.path === '/creators'} href="/creators">Creators</a>
-<a class="btn btn-ghost btn-sm rounded-btn" class:active={$page.path === '/series'} href="/series">Series</a>
-<a class="btn btn-ghost btn-sm rounded-btn" class:active={$page.path === '/issues'} href="/issues">Issues</a>
+<a class="navbar-item" class:active={$page.path === '/publishers'} href="/publishers"> Publishers </a>
+<a class="navbar-item" class:active={$page.path === '/franchises'} href="/franchises"> Franchises </a>
+<a class="navbar-item" class:active={$page.path === '/creators'} href="/creators"> Creators </a>
+<a class="navbar-item" class:active={$page.path === '/series'} href="/series"> Series </a>
+
 {#if $session.user && showAdminMenu}
-  <a class="btn btn-ghost btn-sm rounded-btn" class:active={$page.path.indexOf('/admin') > -1} href="/admin">Admin</a>
+  <hr class="navbar-divider" />
+  <a class="navbar-item" class:active={$page.path.indexOf('/admin') > -1} href="/admin"> Admin </a>
 {/if}
