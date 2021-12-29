@@ -84,10 +84,11 @@
               </div>
             </div>
           {:else}
-            <a class="button is-primary" href="/register" class:active={$page.path === '/register'}>
-              <strong>Register</strong>
+            <a class="button is-light" href="/register" class:active={$page.path === '/register'}>
+              <span class="icon mr-1"><i class="fas fa-user-plus" /></span>
+              Register
             </a>
-            <a class="button is-light" href="/login" class:active={$page.path === '/login'}><span class="icon mr-1"><i class="fas fa-sign-in-alt" /></span> Sign in </a>
+            <a class="button is-primary" href="/login" class:active={$page.path === '/login'}><span class="icon mr-1"><i class="fas fa-sign-in-alt" /></span> Sign in </a>
           {/if}
         </div>
       </div>
