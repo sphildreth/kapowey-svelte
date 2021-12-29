@@ -78,16 +78,16 @@
                 {$session.user.userName}
               </a>
               <div class="navbar-dropdown">
-                <a class="navbar-item" href="/profile/edit"> Edit Profile </a>
+                <a class="navbar-item" href="/profile/edit"><span class="icon mr-1"><i class="fas fa-id-card" /></span> Edit Profile </a>
                 <hr class="navbar-divider" />
-                <a class="navbar-item is-warning" href={'javascript:void(0)'} on:click={logout}> Logout </a>
+                <a class="navbar-item is-warning" href={'javascript:void(0)'} on:click={logout}><span class="icon mr-1"><i class="fas fa-sign-out-alt" /></span> Sign out </a>
               </div>
             </div>
           {:else}
             <a class="button is-primary" href="/register" class:active={$page.path === '/register'}>
               <strong>Register</strong>
             </a>
-            <a class="button is-light" href="/login" class:active={$page.path === '/login'}> Log in </a>
+            <a class="button is-light" href="/login" class:active={$page.path === '/login'}><span class="icon mr-1"><i class="fas fa-sign-in-alt" /></span> Sign in </a>
           {/if}
         </div>
       </div>

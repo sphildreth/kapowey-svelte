@@ -1,6 +1,6 @@
 /* Write your global styles here, in SCSS syntax. Variables and mixins from the src/variables.scss file are available here without importing */ /* Import only what you need from Bulma */
 
-@import 'bulmaswatch/darkly/_variables';
+@import 'bulmaswatch/superhero/_variables';
 
 @import 'bulma/sass/utilities/_all';
 @import 'bulma/sass/base/_all';
@@ -11,7 +11,7 @@
 @import 'bulma/sass/helpers/_all';
 @import 'bulma/sass/layout/_all';
 
-@import 'bulmaswatch/darkly/_overrides';
+@import 'bulmaswatch/superhero/_overrides';
 
 a.active {
   color: cyan;
