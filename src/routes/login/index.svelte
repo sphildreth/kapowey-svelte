@@ -27,7 +27,7 @@
 
     if (response.isSuccess) {
       const returnUrl = $page.query.get('returnUrl');
-      window.location = returnUrl ? atob(returnUrl) : '/';
+      window.location = returnUrl ? Buffer.from(returnUrl, 'base64') : '/';
     }
   }
 </script>
@@ -65,6 +65,16 @@
               <button class="button is-pulled-right"> Forgot Password? </button>
             </div>
           </form>
+          {#if errors}
+            <article class="message is-danger">
+              <div class="message-header">
+                <p>Errors</p>
+              </div>
+              <div class="message-body">
+                <ListErrors {errors} />
+              </div>
+            </article>
+          {/if}
           <article class="message is-info">
             <div class="message-header">
               <p>Sign In</p>

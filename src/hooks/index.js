@@ -19,10 +19,12 @@ export async function handle({ request, resolve }) {
 	request.locals.user = jwt ? JSON.parse(jwt) : null;
 	if(request.locals.user) {
 		var parsedJwt = parseJwt(request.locals.user.token);
-		request.locals.user.isAdmin = parsedJwt.role.indexOf("Admin") > -1;
-		request.locals.user.isManager = parsedJwt.role.indexOf("Manager") > -1;
-		request.locals.user.isEditor = parsedJwt.role.indexOf("Editor") > -1;
-		request.locals.user.isContributor = parsedJwt.role.indexOf("Contributor") > -1;
+		if(parsedJwt.role) {
+			request.locals.user.isAdmin = parsedJwt.role.indexOf("Admin") > -1;
+			request.locals.user.isManager = parsedJwt.role.indexOf("Manager") > -1;
+			request.locals.user.isEditor = parsedJwt.role.indexOf("Editor") > -1;
+			request.locals.user.isContributor = parsedJwt.role.indexOf("Contributor") > -1;
+		}
     	console.log({user: request.locals.user, jwt: parsedJwt})
 	}
 	return await resolve(request);

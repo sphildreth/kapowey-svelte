@@ -15,6 +15,7 @@
   import { get } from '$lib/api.js';
   import { page, session } from '$app/stores';
   import ListErrors from '$lib/ListErrors.svelte';
+  import debounce from 'lodash/debounce';
   import { passwordStrength } from 'check-password-strength';
 
   let email = '';
@@ -25,30 +26,40 @@
   let checkingEmailAddress = false;
   let pwStrength = 0;
 
+  let registerButtonDiabled = true;
+
   async function submit(event) {
-    const response = await post(`auth/login`, { email, password });
+    const response = await post(`auth/register`, { email, password });
 
     // TODO handle network errors
     errors = response.errors;
 
     if (response.isSuccess) {
       const returnUrl = $page.query.get('returnUrl');
-      window.location = returnUrl ? atob(returnUrl) : '/';
+      window.location = returnUrl ? Buffer.from(returnUrl, 'base64') : '/';
     }
   }
 
-  async function checkForExistingEmail(event) {
+  const checkIfEmailExists = async () => {
+    const response = await get(`user/byemail/${encodeURI(email)}`, {});
+    if (!response.isSuccess) {
+      return false;
+    }
+    return response.totalNumberOfRecords === 0;
+  };
+
+  const checkForExistingEmail = debounce(async (e) => {
     checkingEmailAddress = true;
     errors = null;
     if (!email) {
+      checkingEmailAddress = false;
       uniqueEmailAddress = false;
       return;
     }
-    const response = await get(`user/byemail/${encodeURI(email)}`, {});
+    uniqueEmailAddress = await checkIfEmailExists();
     checkingEmailAddress = false;
-    uniqueEmailAddress = response.totalNumberOfRecords === 0;
-    errors = uniqueEmailAddress ? null : ['Email address is invalid or already registered.'];
-  }
+    registerButtonDiabled = !(uniqueEmailAddress && pwStrength == 100);
+  }, 300);
 
   function checkPasswordStrength(event) {
     pwStrength = 0;
@@ -70,6 +81,7 @@
         pwStrength = 100;
         break;
     }
+    registerButtonDiabled = !(uniqueEmailAddress && pwStrength == 100);
   }
 </script>
 
@@ -84,9 +96,12 @@
         <div class="column is-6-tablet is-5-desktop is-4-widescreen">
           <form action="" class="box" on:submit|preventDefault={submit}>
             <div class="field">
+              {#if email && !uniqueEmailAddress}
+                <div class="has-text-warning is-pulled-right is-size-7">Email is in use or invalid</div>
+              {/if}
               <label for="" class="label">Email</label>
               <div class="control has-icons-left has-icons-right">
-                <input type="email" bind:value={email} on:blur|preventDefault={checkForExistingEmail} placeholder="e.g. bwayne@kapowey.com" maxlength="256" class="input" required />
+                <input type="email" bind:value={email} on:keydown={checkForExistingEmail} placeholder="e.g. bwayne@kapowey.com" maxlength="256" class="input" required />
                 <span class="icon is-small is-left">
                   <i class="fa fa-envelope" />
                 </span>
@@ -106,21 +121,31 @@
               </div>
             </div>
             <div class="field">
+              {#if pwStrength && pwStrength < 100}
+                <div class="has-text-warning is-pulled-right is-size-7">Password is not strong enough</div>
+              {/if}
               <label for="" class="label">Password</label>
               <div class="control has-icons-left has-icons-right">
-                <input type="password" bind:value={password} on:keyup={checkPasswordStrength} placeholder="*******" maxlength="256" class="input" required />
+                <input type="password" bind:value={password} on:keydown={checkPasswordStrength} placeholder="*******" maxlength="256" class="input" required />
                 <span class="icon is-small is-left">
                   <i class="fa fa-lock" />
                 </span>
                 {#if pwStrength}
                   <span class="icon is-small is-right">
-                    <progress class="progress mr-1" class:is-warning={pwStrength < 100} class:is-success={pwStrength === 100} value={pwStrength} max="100" />
+                    <progress
+                      class="progress mr-1"
+                      class:is-danger={pwStrength < 50}
+                      class:is-warning={pwStrength >= 75 && pwStrength !== 100}
+                      class:is-success={pwStrength === 100}
+                      value={pwStrength}
+                      max="100"
+                    />
                   </span>
                 {/if}
               </div>
             </div>
             <div class="field">
-              <button class="button is-success"><span class="icon mr-1"><i class="fas fa-user-plus" /></span> Register </button>
+              <button class="button is-success" disabled={registerButtonDiabled}><span class="icon mr-1"><i class="fas fa-user-plus" /></span> Register </button>
             </div>
           </form>
           {#if errors}
