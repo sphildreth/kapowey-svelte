@@ -30,14 +30,11 @@
 
   async function submit(event) {
     const response = await post(`auth/register`, { email, password });
-
-    // TODO handle network errors
-    errors = response.errors;
-
     if (response.isSuccess) {
       const returnUrl = $page.query.get('returnUrl');
       window.location = returnUrl ? Buffer.from(returnUrl, 'base64') : '/';
     }
+    errors = response.messages.map((m) => m.message);
   }
 
   const checkIfEmailExists = async () => {

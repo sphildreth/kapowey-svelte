@@ -7,7 +7,7 @@ export function protectedRoute(session, base, role, returnUrl) {
     }
     if(!session.user || (session.user && !hasRole)) {
         return {
-            redirect: `/login?returnUrl=${ returnUrl ? btoa(returnUrl) : '' }`,
+            redirect: `/login?returnUrl=${ returnUrl ? Buffer.from(returnUrl).toString('base64') : '' }`,
             status: 303
         }
     }

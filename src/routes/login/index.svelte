@@ -20,15 +20,15 @@
   let errors = null;
 
   async function submit(event) {
+    errors = null;
     const response = await post(`auth/login`, { email, password });
-
-    // TODO handle network errors
-    errors = response.errors;
-
     if (response.isSuccess) {
       const returnUrl = $page.query.get('returnUrl');
       window.location = returnUrl ? Buffer.from(returnUrl, 'base64') : '/';
     }
+    email = '';
+    password = '';
+    errors = response.messages.map((m) => m.message);
   }
 </script>
 

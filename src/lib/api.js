@@ -32,6 +32,7 @@ export function del(path, token) {
 }
 
 export function post(path, data, token) {
+	console.log({ type: 'post', path: path, data:data, token:token});
 	return send({ method: 'POST', path, data, token });
 }
 

@@ -1,7 +1,7 @@
 import { serialize } from 'cookie';
 import { envSettings } from '$lib/envSettings.ts';
 export function respond(body) {
-	if (body.errors) {
+	if (!body.isSuccess) {
 		return { status: 401, body };
 	}
 	const user = body.data.user;

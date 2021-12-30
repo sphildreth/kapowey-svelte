@@ -72,7 +72,7 @@
             </a>
             <div class="navbar-item has-dropdown is-hoverable">
               <a class="navbar-link" href={'javascript:void(0)'}>
-                <figure class="image is-32x32">
+                <figure class="image is-32x32 mr-2">
                   <img src={$session.user.avatarUrl} alt={$session.user.userName} />
                 </figure>
                 {$session.user.userName}

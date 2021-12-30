@@ -33,6 +33,8 @@
   },
   "type": "module",
   "dependencies": {
+    "bulma-switch": "^2.0.0",
+    "bulma-toast": "^2.4.1",
     "bulmaswatch": "^0.8.1",
     "check-password-strength": "^2.0.3",
     "cookie": "^0.4.1",
