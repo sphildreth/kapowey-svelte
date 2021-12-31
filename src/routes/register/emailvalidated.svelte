@@ -1,3 +1,7 @@
+<svelte:head>
+  <title>Validated Email • Kapowey!</title>
+</svelte:head>
+
 <section class="hero">
   <div class="hero-body">
     <p class="title">Validated Email Address</p>

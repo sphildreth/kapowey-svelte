@@ -62,7 +62,7 @@
                 </span>
               </p>
             </div>
-            <a class="navbar-item nav-tag" href={'javascript:void(0)'}>
+            <a class="navbar-item nav-tag" href="/notifications">
               <span class="icon is-medium">
                 <i class="fas fa-bell fa-lg" />
               </span>

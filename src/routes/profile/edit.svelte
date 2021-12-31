@@ -112,6 +112,10 @@
   }
 </script>
 
+<svelte:head>
+  <title>Edit Profile • Kapowey!</title>
+</svelte:head>
+
 <section>
   <div class="container box my-3">
     <form action="" class="" on:submit|preventDefault={submit}>

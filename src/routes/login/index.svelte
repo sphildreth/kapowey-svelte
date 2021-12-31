@@ -62,7 +62,7 @@
             </div>
             <div class="field">
               <button class="button is-success"><span class="icon mr-1"><i class="fas fa-sign-in-alt" /></span> Sign in </button>
-              <button class="button is-pulled-right"> Forgot Password? </button>
+              <a href="/login/forgotpassword" class="button is-pulled-right"> Forgot Password? </a>
             </div>
           </form>
           {#if errors}
@@ -81,6 +81,14 @@
             </div>
             <div class="message-body">
               <p class="mb-2">Sign in using your email and password you used to Register.</p>
+            </div>
+          </article>
+          <article class="message is-warning">
+            <div class="message-header">
+              <p>Email validation required</p>
+            </div>
+            <div class="message-body">
+              <p class="mb-2">You will not be able to sign in until you have validated your email via the link sent to your email address provided at registration.</p>
             </div>
           </article>
         </div>
