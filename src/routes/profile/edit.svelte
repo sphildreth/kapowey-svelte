@@ -1,7 +1,7 @@
 <script context="module">
   import { session } from '$app/stores';
   import { protectedRoute } from '$lib/protectedRoute';
-  import { post } from '$lib/api';
+  import { post, patch } from '$lib/api';
   import { get } from '../../lib/api';
   export async function load({ session }) {
     return protectedRoute(session, {}, null, '/profile/edit');
@@ -12,10 +12,14 @@
   import { onMount } from 'svelte';
   import ListErrors from '$lib/ListErrors.svelte';
   import { toast } from 'bulma-toast';
+  import debounce from 'lodash/debounce';
+  import { marked } from 'marked';
 
-  let user = {};
+  let user = {
+    profileAbout: '',
+  };
 
-  let errors, avatar, saveAvatarEnabled, modifyToken;
+  let errors, avatar, saveProfileEnabled, saveAvatarEnabled, modifyToken, isEmailValid, checkingEmailAddress, isUserNameValid, checkingUserName;
 
   onMount(async () => {
     user = (await get(`user/${$session.user.id}`, $session.user.token)).data;
@@ -35,6 +39,48 @@
     };
   };
 
+  const checkIfEmailExists = async () => {
+    const response = await get(`user/byemail/${encodeURI(user.email)}`, {});
+    if (!response.isSuccess) {
+      return false;
+    }
+    return response.totalNumberOfRecords === 0 || (response.totalNumberOfRecords === 1 && response.data[1].id === user.id);
+  };
+
+  const checkIfUserNamelExists = async () => {
+    const response = await get(`user/byusername/${encodeURI(user.userName)}`, {});
+    if (!response.isSuccess) {
+      return false;
+    }
+    return response.totalNumberOfRecords === 0 || (response.totalNumberOfRecords === 1 && response.data[1].id === user.id);
+  };
+
+  const checkForExistingEmail = debounce(async (e) => {
+    checkingEmailAddress = true;
+    errors = null;
+    if (!user.email) {
+      checkingEmailAddress = false;
+      isEmailValid = false;
+      return;
+    }
+    isEmailValid = await checkIfEmailExists();
+    checkingEmailAddress = false;
+    saveProfileEnabled = isEmailValid;
+  }, 300);
+
+  const checkForExistingUserName = debounce(async (e) => {
+    checkingUserName = true;
+    errors = null;
+    if (!user.userName) {
+      checkingUserName = false;
+      isUserNameValid = false;
+      return;
+    }
+    isUserNameValid = await checkIfUserNamelExists();
+    checkingUserName = false;
+    saveProfileEnabled = isUserNameValid;
+  }, 300);
+
   async function uploadSelectedAvatar(e) {
     const response = await post(`user/setavatar/${user.id}`, { id: user.id, modifyToken, avatarUrl: avatar }, $session.user.token);
     if (response.isSuccess) {
@@ -45,15 +91,23 @@
   }
 
   async function submit(event) {
-    // errors = null;
-    // const response = await post(`auth/login`, { email, password });
-    // if (response.isSuccess) {
-    //   const returnUrl = $page.query.get('returnUrl');
-    //   window.location = returnUrl ? Buffer.from(returnUrl, 'base64') : '/';
-    // }
-    // email = '';
-    // password = '';
-    // errors = response.messages.map((m) => m.message);
+    errors = null;
+    const response = await patch(
+      `user/${user.id}`,
+      [
+        { op: 'replace', path: '/email', value: user.email },
+        { op: 'replace', path: '/userName', value: user.userName },
+        { op: 'replace', path: '/phoneNumber', value: user.phoneNumber },
+        { op: 'replace', path: '/profileAbout', value: user.profileAbout },
+        { op: 'replace', path: '/isPublic', value: user.isPublic },
+      ],
+      $session.user.token,
+    );
+    if (response.isSuccess) {
+      toast({ message: 'Updated profile successfully!', position: 'top-center', type: 'is-success' });
+      return;
+    }
+    errors = response.messages.map((m) => m.message);
   }
 </script>
 
@@ -61,38 +115,68 @@
   <div class="container box my-3">
     <form action="" class="" on:submit|preventDefault={submit}>
       <div class="field is-pulled-right">
-        <input id="switchExample" type="checkbox" name="switchExample" class="switch" bind:checked={user.isPublic} />
+        <input id="switchExample" type="checkbox" name="switchExample" class="switch" bind:checked={user.isPublic} on:change={() => (saveProfileEnabled = true)} />
         <label for="switchExample">Can other users see your profile?</label>
       </div>
       <div class="field mt-4">
         <label for="" class="label">Email</label>
-        <div class="control has-icons-left">
-          <input type="email" bind:value={user.email} maxlength="256" class="input" required />
+        <div class="control has-icons-left has-icons-right">
+          <input type="email" bind:value={user.email} on:keydown={checkForExistingEmail} maxlength="256" class="input" required />
           <span class="icon is-small is-left">
             <i class="fa fa-envelope" />
           </span>
+          {#if isEmailValid}
+            <span class="icon has-text-success is-small is-right">
+              <i class="fas fa-thumbs-up" />
+            </span>
+          {:else if checkingEmailAddress}
+            <span class="icon has-text-danger is-small is-right">
+              <i class="fas fas fa-spinner fa-pulse" />
+            </span>
+          {/if}
         </div>
       </div>
       <div class="field">
         <label for="" class="label">Username</label>
-        <div class="control has-icons-left">
-          <input type="email" bind:value={user.userName} maxlength="256" class="input" required />
+        <div class="control has-icons-left has-icons-right">
+          <input type="text" bind:value={user.userName} on:keydown={checkForExistingUserName} maxlength="256" class="input" required />
           <span class="icon is-small is-left">
             <i class="fas fa-user" />
           </span>
+          {#if isUserNameValid}
+            <span class="icon has-text-success is-small is-right">
+              <i class="fas fa-thumbs-up" />
+            </span>
+          {:else if checkingUserName}
+            <span class="icon has-text-danger is-small is-right">
+              <i class="fas fas fa-spinner fa-pulse" />
+            </span>
+          {/if}
         </div>
       </div>
       <div class="field">
         <label for="" class="label">Phone Number</label>
         <div class="control has-icons-left">
-          <input type="tel" bind:value={user.phoneNumber} class="input" />
+          <input type="tel" bind:value={user.phoneNumber} on:keydown={() => (saveProfileEnabled = true)} class="input" />
           <span class="icon is-small is-left">
             <i class="fas fa-mobile-alt" />
           </span>
         </div>
       </div>
+      <div class="field profile-editor">
+        <label for="" class="label">About</label>
+        <div class="control columns is-6">
+          <div class="column">
+            <textarea class="profile-editor" bind:value={user.profileAbout} on:keydown={() => (saveProfileEnabled = true)} placeholder="Edit your profile about details here." />
+          </div>
+          <div class="column is-6 box">
+            <div class="">{@html marked(user.profileAbout)}</div>
+          </div>
+        </div>
+      </div>
+
       <div class="field">
-        <button class="button is-success" disabled><span class="icon mr-1"><i class="fas fa-id-card" /></span> Save Profile </button>
+        <button class="button is-success" disabled={!saveProfileEnabled}><span class="icon mr-1"><i class="fas fa-id-card" /></span> Save Profile </button>
       </div>
     </form>
     {#if errors}
@@ -117,7 +201,7 @@
             <input class="file-input" type="file" name="avatar" accept=".jpg, .jpeg, .png" on:change={(e) => onFileSelected(e)} />
             <span class="file-cta">
               <span class="file-icon">
-                <i class="fas fa-upload" />
+                <i class="fas fa-image" />
               </span>
               <span class="file-label"> Select new profile image </span>
             </span>
@@ -145,5 +229,11 @@
 <style>
   img.user-avatar {
     max-height: 128px;
+  }
+
+  textarea.profile-editor {
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 </style>
