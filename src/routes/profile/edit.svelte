@@ -93,17 +93,18 @@
   async function submit(event) {
     errors = null;
     const response = await patch(
-      `user/${user.id}`,
+      `user/${user.id}/${modifyToken}`,
       [
-        { op: 'replace', path: '/email', value: user.email },
-        { op: 'replace', path: '/userName', value: user.userName },
-        { op: 'replace', path: '/phoneNumber', value: user.phoneNumber },
-        { op: 'replace', path: '/profileAbout', value: user.profileAbout },
-        { op: 'replace', path: '/isPublic', value: user.isPublic },
+        { op: 'add', path: '/email', value: user.email },
+        { op: 'add', path: '/userName', value: user.userName },
+        { op: 'add', path: '/phoneNumber', value: user.phoneNumber },
+        { op: 'add', path: '/profileAbout', value: user.profileAbout },
+        { op: 'add', path: '/isPublic', value: user.isPublic },
       ],
       $session.user.token,
     );
     if (response.isSuccess) {
+      modifyToken = response.data.modifyToken;
       toast({ message: 'Updated profile successfully!', position: 'top-center', type: 'is-success' });
       return;
     }
@@ -170,7 +171,7 @@
             <textarea class="profile-editor" bind:value={user.profileAbout} on:keydown={() => (saveProfileEnabled = true)} placeholder="Edit your profile about details here." />
           </div>
           <div class="column is-6 box">
-            <div class="">{@html marked(user.profileAbout)}</div>
+            <div class="">{@html marked(user.profileAbout || '')}</div>
           </div>
         </div>
       </div>

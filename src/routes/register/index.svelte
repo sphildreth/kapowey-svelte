@@ -42,7 +42,7 @@
     if (!response.isSuccess) {
       return false;
     }
-    return response.totalNumberOfRecords === 0;
+    return !response.totalNumberOfRecords;
   };
 
   const checkForExistingEmail = debounce(async (e) => {

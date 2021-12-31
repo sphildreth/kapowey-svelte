@@ -2,7 +2,6 @@
 
 interface Locals {
     session: import("svelte-kit-cookie-session").Session<{
-      theme: "dark" | "light";
       username: string;
       id: string;
       avatarUrl: string;

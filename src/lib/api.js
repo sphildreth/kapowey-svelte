@@ -8,6 +8,10 @@ async function send({ method, path, data, token }) {
 		opts.body = JSON.stringify(data);
 	}
 
+	if(method === 'PATCH') {
+		opts.headers['Content-Type'] = 'application/json-patch+json';
+	}
+
 	if (token) {
 		opts.headers['Authorization'] = `Bearer ${token}`;
 	}
@@ -32,7 +36,6 @@ export function del(path, token) {
 }
 
 export function post(path, data, token) {
-	console.log({ type: 'post', path: path, data:data, token:token});
 	return send({ method: 'POST', path, data, token });
 }
 
