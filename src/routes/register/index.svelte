@@ -32,13 +32,13 @@
     const response = await post(`auth/register`, { email, password });
     if (response.isSuccess) {
       const returnUrl = $page.query.get('returnUrl');
-      window.location = returnUrl ? Buffer.from(returnUrl, 'base64') : '/';
+      window.location = returnUrl ? atob(returnUrl) : '/';
     }
     errors = response.messages.map((m) => m.message);
   }
 
   const checkIfEmailExists = async () => {
-    const response = await get(`user/byemail/${encodeURI(email)}`, {});
+    const response = await get(`user/byemail/${encodeURIComponent(btoa(email))}`, {});
     if (!response.isSuccess) {
       return false;
     }

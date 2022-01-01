@@ -24,7 +24,7 @@
     const response = await post(`auth/login`, { email, password });
     if (response.isSuccess) {
       const returnUrl = $page.query.get('returnUrl');
-      window.location = returnUrl ? Buffer.from(returnUrl, 'base64') : '/';
+      window.location = returnUrl ? atob(returnUrl) : '/';
     }
     email = '';
     password = '';

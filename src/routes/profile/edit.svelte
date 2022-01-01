@@ -40,7 +40,7 @@
   };
 
   const checkIfEmailExists = async () => {
-    const response = await get(`user/byemail/${encodeURI(user.email)}`, {});
+    const response = await get(`user/byemail/${encodeURIComponent(btoa(user.email))}`, {});
     if (!response.isSuccess) {
       return false;
     }
@@ -48,7 +48,7 @@
   };
 
   const checkIfUserNamelExists = async () => {
-    const response = await get(`user/byusername/${encodeURI(user.userName)}`, {});
+    const response = await get(`user/byusername/${encodeURIComponent(btoa(user.userName))}`, {});
     if (!response.isSuccess) {
       return false;
     }

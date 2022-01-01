@@ -16,6 +16,8 @@ async function send({ method, path, data, token }) {
 		opts.headers['Authorization'] = `Bearer ${token}`;
 	}
 
+	opts.headers['Kapowey-App-Id'] = envSettings.apiAppId;
+
 	return fetch(`${envSettings.apiUrl}/${path}`, opts)
 		.then((r) => r.text())
 		.then((json) => {
