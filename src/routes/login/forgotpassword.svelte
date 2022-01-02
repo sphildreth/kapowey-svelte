@@ -2,7 +2,6 @@
   import * as api from '$lib/api.js';
   import { toast } from 'bulma-toast';
   import ListErrors from '$lib/ListErrors.svelte';
-  import { envSettings } from '$lib/envSettings.ts';
 
   let email = '';
   let errors;
@@ -10,7 +9,7 @@
   async function submit(event) {
     errors = null;
     var emailb64 = btoa(email);
-    var returnurlb64 = btoa(encodeURIComponent(`${envSettings.appUrl}/login/resetpassword?e=${email}`));
+    var returnurlb64 = btoa(encodeURIComponent(`/login/resetpassword?e=${email}`));
     const response = await api.get(`user/sendpasswordresetemail/${encodeURIComponent(emailb64)}/${returnurlb64}`);
     if (response.isSuccess) {
       toast({ message: 'Email sent! Please check your email in a couple of minutes.', position: 'top-center', type: 'is-success' });

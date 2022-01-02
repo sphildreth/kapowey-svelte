@@ -7,7 +7,7 @@ export async function post(request) {
 		email: request.body.email,
 		username: request.body.email,
 		password: request.body.password,
-		valiationReturnUrl: `${ envSettings.appUrl }/register/emailvalidated`
+		valiationReturnUrl: `/register/emailvalidated`
 	});
 
 	return respond(body);
