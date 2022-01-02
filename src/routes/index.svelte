@@ -6,7 +6,53 @@
   <title>Dashboard • Kapowey!</title>
 </svelte:head>
 
-Dashboard stuff goes here.
+{#if !$session.user}
+  <article class="message is-primary mt-2">
+    <div class="message-header">
+      <p>Kapowey!</p>
+    </div>
+    <div class="message-body">
+      <p>The motivation behind Kapowey! is to create an application which helps you manage your comic book collection.</p>
+      <p>
+        Once you register an account, you can start adding issues to your collection. Then quickly find out what issues you need to complete a series, share with someone your collection, or share with
+        someone issues you wish you had.
+      </p>
+    </div>
+  </article>
+{/if}
+
+<!-- <div class="box cta">
+  <p class="has-text-centered">
+    <span class="tag is-primary">New</span> Here we have modal cards. When you click on them they will open functional modal examples.
+  </p>
+</div> -->
+
+<div class="columns">
+  <div class="column is-one-quarter">
+    <article class="message is-info">
+      <div class="message-header">
+        <p><span class="icon"><i class="fas fa-building" /></span> Publishers</p>
+      </div>
+      <div class="message-body">Put top 3 publishers here.</div>
+    </article>
+  </div>
+  <div class="column is-one-quarter">
+    <article class="message is-info">
+      <div class="message-header">
+        <p><span class="icon"><i class="fas fa-cube" /></span> Series</p>
+      </div>
+      <div class="message-body">Put top 3 series here.</div>
+    </article>
+  </div>
+  <div class="column is-half">
+    <article class="message is-info">
+      <div class="message-header">
+        <p><span class="icon"><i class="fas fa-book" /></span> Issues</p>
+      </div>
+      <div class="message-body">Put random issues here.</div>
+    </article>
+  </div>
+</div>
 
 {#if $session.user}
   User is logged in.

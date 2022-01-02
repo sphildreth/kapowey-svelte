@@ -41,7 +41,7 @@
   <div id="navMenu" class="navbar-menu">
     <div class="navbar-start">
       <a class="navbar-item" href="/" class:active={$page.path === '/'}> Dashboard </a>
-      <a class="navbar-item" class:active={$page.path === '/issues'} href="/issues"> Issues </a>
+      <a class="navbar-item" class:active={$page.path === '/issues'} href="/issues"><span class="icon mr-1"><i class="fas fa-book" /></span> Issues </a>
       <div class="navbar-item has-dropdown is-hoverable">
         <a class="navbar-link" href={'javascript:void(0)'}> More </a>
         <div class="navbar-dropdown">
@@ -79,6 +79,7 @@
               </a>
               <div class="navbar-dropdown">
                 <a class="navbar-item" href="/profile/edit"><span class="icon mr-1"><i class="fas fa-id-card" /></span> Edit Profile </a>
+                <a class="navbar-item" href="/collections"><span class="icon mr-1"><i class="fas fa-box-open" /></span> Collections </a>
                 <hr class="navbar-divider" />
                 <a class="navbar-item is-warning" href={'javascript:void(0)'} on:click={logout}><span class="icon mr-1"><i class="fas fa-sign-out-alt" /></span> Sign out </a>
               </div>
