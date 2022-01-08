@@ -25,7 +25,7 @@
   let notifications = 0;
 </script>
 
-<nav class="navbar" role="navigation" aria-label="main navigation">
+<nav class="navbar" aria-label="main navigation">
   <div class="navbar-brand">
     <a href="/">
       <img src="/android-icon-48x48.png" height="48" width="48" alt="Kapowey!" />
@@ -40,8 +40,8 @@
 
   <div id="navMenu" class="navbar-menu">
     <div class="navbar-start">
-      <a class="navbar-item" href="/" class:active={$page.path === '/'}> Dashboard </a>
-      <a class="navbar-item" class:active={$page.path === '/issues'} href="/issues"><span class="icon mr-1"><i class="fas fa-book" /></span> Issues </a>
+      <a class="navbar-item" href="/" class:active={$page.url.pathname === '/'}> Dashboard </a>
+      <a class="navbar-item" class:active={$page.url.pathname === '/issues'} href="/issues"><span class="icon mr-1"><i class="fas fa-book" /></span> Issues </a>
       <div class="navbar-item has-dropdown is-hoverable">
         <a class="navbar-link" href={'javascript:void(0)'}> More </a>
         <div class="navbar-dropdown">
@@ -85,11 +85,11 @@
               </div>
             </div>
           {:else}
-            <a class="button is-light" href="/register" class:active={$page.path === '/register'}>
+            <a class="button is-light" href="/register" class:active={$page.url.pathname === '/register'}>
               <span class="icon mr-1"><i class="fas fa-user-plus" /></span>
               Register
             </a>
-            <a class="button is-primary" href="/login" class:active={$page.path === '/login'}><span class="icon mr-1"><i class="fas fa-sign-in-alt" /></span> Sign in </a>
+            <a class="button is-primary" href="/login" class:active={$page.url.pathname === '/login'}><span class="icon mr-1"><i class="fas fa-sign-in-alt" /></span> Sign in </a>
           {/if}
         </div>
       </div>

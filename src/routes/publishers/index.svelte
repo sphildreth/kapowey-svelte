@@ -1,5 +1,27 @@
+<script context="module">
+  import { session } from '$app/stores';
+</script>
+
 <script>
-  import PublisherCard from '$lib/PublisherCard.svelte';
+  import * as api from '$lib/api.js';
+  import { onMount } from 'svelte';
+  import { toast } from 'bulma-toast';
+  import PublisherCard from '$lib/components/PublisherCard.svelte';
+
+  let publisherData = [];
+
+  onMount(async () => {
+    await getPublisherData();
+  });
+
+  async function getPublisherData() {
+    const response = await api.post(`publishers`, { pageSize: 3 }, $session.user.token);
+    if (response.isSuccess) {
+      publisherData = response.data;
+      return;
+    }
+    toast({ message: 'Unable to get Publishers!', position: 'top-center', type: 'is-error' });
+  }
 </script>
 
 <svelte:head>
@@ -56,15 +78,11 @@
     </div>
     <div class="publisher-cards-container my-2">
       <div class="columns">
-        <div class="column">
-          <PublisherCard />
-        </div>
-        <div class="column">
-          <PublisherCard />
-        </div>
-        <div class="column">
-          <PublisherCard />
-        </div>
+        {#each publisherData as publisher}
+          <div class="column">
+            <PublisherCard {publisher} />
+          </div>
+        {/each}
       </div>
     </div>
     <nav class="pagination" role="navigation" aria-label="pagination">

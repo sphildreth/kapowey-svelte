@@ -23,7 +23,7 @@
     errors = null;
     const response = await post(`auth/login`, { email, password });
     if (response.isSuccess) {
-      const returnUrl = $page.query.get('returnUrl');
+      const returnUrl = $page.url.searchParams.get('returnUrl');
       window.location = returnUrl ? atob(returnUrl) : '/';
     }
     email = '';

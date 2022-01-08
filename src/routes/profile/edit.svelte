@@ -1,8 +1,7 @@
 <script context="module">
   import { session } from '$app/stores';
   import { protectedRoute } from '$lib/protectedRoute';
-  import { post, patch } from '$lib/api';
-  import { get } from '../../lib/api';
+  import { post, patch, get } from '$lib/api';
   export async function load({ session }) {
     return protectedRoute(session, {}, null, '/profile/edit');
   }

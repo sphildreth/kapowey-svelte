@@ -5,8 +5,8 @@
   import { passwordStrength } from 'check-password-strength';
   import { post } from '$lib/utils.js';
 
-  const email = $page.query.get('e');
-  const token = $page.query.get('t');
+  const email = $page.url.searchParams.get('e');
+  const token = $page.url.searchParams.get('t');
 
   let password1, password2, errors;
   let pwStrength = 0;
