@@ -6,18 +6,89 @@
   import * as api from '$lib/api.js';
   import { onMount } from 'svelte';
   import { toast } from 'bulma-toast';
+  import debounce from 'lodash/debounce';
   import PublisherCard from '$lib/components/PublisherCard.svelte';
 
   let publisherData = [];
+  let filterValue = null;
+  let pagingInformation = {
+    pageNumber: 1,
+    totalNumberOfPages: 1,
+    totalNumberOfRecords: 0,
+    filters: [],
+  };
+  let pageButtons = [];
+
+  let nextPageDisabled = false;
+  let previousPageDisabled = true;
 
   onMount(async () => {
     await getPublisherData();
   });
 
+  async function btnGotoPage(e) {}
+
+  const filterData = debounce(async (e) => {
+    if (!filterValue) {
+      pagingInformation.pageNumber = 1;
+      pagingInformation.totalNumberOfPages = 1;
+      pagingInformation.totalNumberOfRecords = 0;
+    }
+    pagingInformation.filters = [
+      {
+        operation: 'like',
+        prop: 'name',
+        value: filterValue,
+      },
+    ];
+    await getPublisherData();
+  }, 300);
+
+  async function gotoPreviousPage() {
+    pagingInformation.pageNumber--;
+    await gotoPage();
+  }
+
+  async function gotoNextPage() {
+    pagingInformation.pageNumber++;
+    await gotoPage();
+  }
+
+  async function gotoPage() {
+    nextPageDisabled = false;
+    previousPageDisabled = true;
+    if (pagingInformation.pageNumber >= pagingInformation.totalNumberOfPages) {
+      pagingInformation.pageNumber = pagingInformation.totalNumberOfPages;
+      nextPageDisabled = true;
+    } else if (pagingInformation.pageNumber <= 1) {
+      previousPageDisabled = false;
+    }
+    await getPublisherData();
+  }
+
   async function getPublisherData() {
-    const response = await api.post(`publishers`, { pageSize: 3 }, $session.user.token);
+    const response = await api.post(
+      `publishers`,
+      {
+        pageSize: 10,
+        page: pagingInformation.pageNumber,
+        filters: pagingInformation.filters,
+      },
+      $session.user.token,
+    );
     if (response.isSuccess) {
       publisherData = response.data;
+      pagingInformation.totalNumberOfPages = response.totalNumberOfPages;
+      pagingInformation.totalNumberOfRecords = response.totalNumberOfRecords;
+      pagingInformation.pageNumber = response.pageNumber;
+      pageButtons = [pagingInformation.pageNumber];
+      if (pagingInformation.totalNumberOfPages > pagingInformation.pageNumber) {
+        pageButtons.push(pagingInformation.pageNumber + 1);
+      }
+      if (pagingInformation.totalNumberOfPages > pageButtons.slice(-1)[0]) {
+        pageButtons.push(pageButtons.slice(-1)[0] + 1);
+      }
+      console.log({ nextPageDisabled, pagingInformation });
       return;
     }
     toast({ message: 'Unable to get Publishers!', position: 'top-center', type: 'is-error' });
@@ -69,7 +140,7 @@
     <div class="publishers-filtering-container mt-2">
       <div class="field is-half">
         <p class="control has-icons-left has-icons-right">
-          <input placeholder="Search" class="input is-primary" />
+          <input placeholder="Filter" bind:value={filterValue} on:keydown={filterData} class="input is-primary" />
           <span class="icon is-small is-left">
             <i class="fas fa-search" />
           </span>
@@ -77,27 +148,31 @@
       </div>
     </div>
     <div class="publisher-cards-container my-2">
-      <div class="columns">
-        {#each publisherData as publisher}
-          <div class="column">
-            <PublisherCard {publisher} />
-          </div>
-        {/each}
-      </div>
+      {#each publisherData as publisher}
+        <PublisherCard {publisher} />
+      {/each}
     </div>
-    <nav class="pagination" role="navigation" aria-label="pagination">
-      <a class="pagination-previous is-disabled" title="This is the first page">Previous</a>
-      <a class="pagination-next">Next page</a>
+    <nav class="pagination" aria-label="pagination">
+      <button class="button pagination-previous" on:click={gotoPreviousPage} disabled={pagingInformation.pageNumber === 1}>Previous page</button>
+      <button class="button pagination-next" on:click={gotoNextPage} disabled={nextPageDisabled}>Next page</button>
       <ul class="pagination-list">
-        <li>
-          <a class="pagination-link is-current" aria-label="Page 1" aria-current="page">1</a>
-        </li>
-        <li>
-          <a class="pagination-link" aria-label="Goto page 2">2</a>
-        </li>
-        <li>
-          <a class="pagination-link" aria-label="Goto page 3">3</a>
-        </li>
+        {#each pageButtons as pageButton}
+          <li>
+            <a href={'javascript:void(0);'} class="pagination-link" class:is-current={pageButton === pagingInformation.pageNumber} aria-label="Page {pageButton}" aria-current="page">{pageButton}</a>
+          </li>
+        {/each}
+        {#if pageButtons.slice(-1)[0] < pagingInformation.totalNumberOfPages + 2}
+          <li>
+            <span class="pagination-ellipsis">&hellip;</span>
+          </li>
+        {/if}
+        {#if pageButtons.slice(-1)[0] < pagingInformation.totalNumberOfPages}
+          <li>
+            <a href={'javascript:void(0);'} class="pagination-link" on:click={btnGotoPage} aria-label="Page {pagingInformation.totalNumberOfPages}" aria-current="page"
+              >{pagingInformation.totalNumberOfPages}</a
+            >
+          </li>
+        {/if}
       </ul>
     </nav>
   </div>
