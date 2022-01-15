@@ -1,8 +1,12 @@
 <script>
   export let publisher;
+
+  function gotoPublisher() {
+    window.location = `/publisher/${publisher.id}`;
+  }
 </script>
 
-<div class="card is-clickable" data-publisher-id={publisher.id}>
+<div class="card is-clickable" data-publisher-id={publisher.id} on:click={gotoPublisher}>
   <div class="card-image" />
   <div class="card-content">
     <div class="media">
